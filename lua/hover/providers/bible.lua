@@ -14,25 +14,41 @@ require("hover").register({
 		current_line = string.gsub(current_line, "^%s*(.-)%s*$", "%1")
 		-- match reference
 		local pattern = "(%d? ?%w+ [:;, %d%-]+%d+)"
-		local reference = string.match(current_line, pattern)
-		-- no reference, try other hover
-		if reference == nil then
+		-- local pattern = "(((Song of|1|2) )?%w+ [:;, %d%-]+%d+)"
+		local references = {}
+		for ref in string.gmatch(current_line, pattern) do
+			ref = string.gsub(ref, "^%s+", "")
+			table.insert(references, ref)
+		end
+		-- no references, try other hover
+		if #references == 0 then
 			done()
 			return
 		end
-		-- run local script
-		local handle = io.popen("/home/dgmastertemple/bible.sh " .. vim.fn.shellescape(reference))
-		local result = handle:read("*a")
-		handle:close()
-		
-		result = vim.split(result, "\n")
-		local lines = { "# " .. reference, "" }
-		for _, line in ipairs(result) do
-			line = string.gsub(line, "%[[^:]+:", "`[")
-			line = string.gsub(line, "%]", "]`")
-			table.insert(lines, line)
+
+		local lines = {}
+		local logs = {}
+		for _, reference in ipairs(references) do
+			-- run local script
+			local handle = io.popen("/home/dgmastertemple/bible.sh " .. vim.fn.shellescape(reference))
+			local result = handle:read("*a")
+			handle:close()
+
+			result = vim.split(result, "\n")
+			-- add title
+			table.insert(lines, "# " .. reference)
+			table.insert(lines, "")
+			-- vim.api.nvim_echo({results}, false, {})
+			table.insert(logs, reference)
+			-- apply formatting
+			for _, line in ipairs(result) do
+				line = string.gsub(line, "%[[^:]+:", "`[")
+				line = string.gsub(line, "%]", "]`")
+				table.insert(lines, line)
+			end
 		end
-		
-		done({ lines = lines, filetype = "markdown", })
+
+		done({ lines = lines, filetype = "markdown"})
+		-- done({ lines = logs, filetype = "markdown"})
 	end,
 })
