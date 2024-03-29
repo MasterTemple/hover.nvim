@@ -185,6 +185,11 @@ local function run_provider(provider, popts)
   if result then
     async.scheduler()
     show_hover(popts.bufnr, provider.id, config, result, opts)
+		if vim.g.hover_key_already_pressed then
+			-- local util = require('hover.util')
+			-- util.switch_to_preview()
+		end
+		vim.g.hover_key_already_pressed = true
     return true
   end
 
@@ -205,6 +210,7 @@ end
 
 --- @param bufnr integer
 function M.close(bufnr)
+  vim.g.hover_key_already_pressed = false
   local cur_hover = vim.b[bufnr].hover_preview
   if cur_hover and api.nvim_win_is_valid(cur_hover) then
     api.nvim_win_close(cur_hover, true)

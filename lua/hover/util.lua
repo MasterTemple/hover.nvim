@@ -313,4 +313,24 @@ function M.open_floating_preview(contents, bufnr, syntax, opts)
   return hover_winid
 end
 
+
+function M.switch_to_preview()
+	local current_win = api.nvim_get_current_win()
+	local windows = api.nvim_list_wins()
+	local next_win
+
+	-- Find the next window
+	for i, win in ipairs(windows) do
+		if win == current_win then
+			next_win = windows[(i % #windows) + 1]
+			break
+		end
+	end
+
+	-- Switch focus to the next window
+	if next_win then
+		api.nvim_set_current_win(next_win)
+	end
+end
+
 return M

@@ -27,6 +27,7 @@ end
 
 --- @param bufnr integer
 function M.close(bufnr)
+  vim.g.hover_key_already_pressed = false
   require('hover.actions').close(bufnr)
 end
 

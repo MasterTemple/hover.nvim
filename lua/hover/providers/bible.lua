@@ -1,3 +1,4 @@
+local util = require('hover.util')
 -- Simple
 require("hover").register({
 	name = "Bible",
@@ -50,6 +51,7 @@ require("hover").register({
 		end
 
 		done({ lines = lines, filetype = "markdown"})
+		util.switch_to_preview()
 		-- done({ lines = logs, filetype = "markdown"})
 	end,
 })
