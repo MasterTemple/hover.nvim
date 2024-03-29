@@ -35,8 +35,9 @@ require("hover").register({
 			handle:close()
 
 			result = vim.split(result, "\n")
-			-- add title
-			table.insert(lines, "# " .. reference)
+			-- replace abbreviation with full book name
+			local full_reference = string.gsub(result[1], "%[(%d?[^%d]+).*", "%1") .. string.match(reference, "%d+:.*")
+			table.insert(lines, "# " .. full_reference)
 			table.insert(lines, "")
 			-- vim.api.nvim_echo({results}, false, {})
 			table.insert(logs, reference)
