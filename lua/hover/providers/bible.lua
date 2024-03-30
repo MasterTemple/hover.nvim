@@ -5,13 +5,15 @@ require("hover").register({
   priority = 110,
 	--- @param bufnr integer
 	enabled = function(bufnr)
-		return true
+		-- return true
+		local current_line = vim.api.nvim_get_current_line()
+		local pattern = "(%d? ?%w+ [:;, %d%-]+%d+)"
+		return string.match(current_line, pattern)
 	end,
 	--- @param opts Hover.Options
 	--- @param done fun(result: any)
 	execute = function(opts, done)
 		local current_line = vim.api.nvim_get_current_line()
-
 		current_line = string.gsub(current_line, "^%s*(.-)%s*$", "%1")
 		-- match reference
 		local pattern = "(%d? ?%w+ [:;, %d%-]+%d+)"

@@ -96,6 +96,7 @@ require('hover').register {
         for _, result in pairs(results or {}) do
           if result.contents then
             local lines = util.convert_input_to_markdown_lines(result.contents)
+            -- local lines = result.contents
             if not vim.tbl_isempty(lines) then
               done{lines=lines, filetype="markdown"}
               return
