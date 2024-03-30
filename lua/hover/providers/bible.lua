@@ -15,7 +15,11 @@ require("hover").register({
 	execute = function(opts, done)
 		local current_line = vim.api.nvim_get_current_line()
 		current_line = string.gsub(current_line, "^%s*(.-)%s*$", "%1")
+		-- put in bars so that 1 John 1:1, 1 Peter 1:1 can work (because the 1 in 1 Peter would be taken)
+		-- '1 John 1:1, 1 Peter 1:1' -> '1 John 1:1, |1 Peter 1:1'
+		current_line = string.gsub(current_line, "%d %a", "|%0")
 		-- match reference
+		-- local pattern = "(%d? ?%w+ [:;, %d%-]+%d+)"
 		local pattern = "(%d? ?%w+ [:;, %d%-]+%d+)"
 		-- local pattern = "(((Song of|1|2) )?%w+ [:;, %d%-]+%d+)"
 		local references = {}
